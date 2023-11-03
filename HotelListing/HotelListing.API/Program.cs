@@ -1,3 +1,5 @@
+using Serilog;
+
 namespace HotelListing.API
 {
     public class Program
@@ -13,12 +15,16 @@ namespace HotelListing.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Adding CORS Policy
+            // Adding Custom CORS Policy
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
 
+            // Adding Serilog Configurations
+            builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration.WriteTo.Console().ReadFrom.Configuration(hostingContext.Configuration));
+            
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,6 +33,9 @@ namespace HotelListing.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Use Serilog Request Logging for logging every request automatically
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 
