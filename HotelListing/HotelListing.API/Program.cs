@@ -13,6 +13,12 @@ namespace HotelListing.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Adding CORS Policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -23,6 +29,9 @@ namespace HotelListing.API
             }
 
             app.UseHttpsRedirection();
+
+            // Use your custom policy
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
