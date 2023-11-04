@@ -1,3 +1,5 @@
+using HotelListing.API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace HotelListing.API
@@ -23,8 +25,13 @@ namespace HotelListing.API
 
             // Adding Serilog Configurations
             builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration.WriteTo.Console().ReadFrom.Configuration(hostingContext.Configuration));
-            
-            
+
+            // Adding DB Context with SQL Server
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
